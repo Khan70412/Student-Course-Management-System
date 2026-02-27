@@ -1,0 +1,17 @@
+1001,Data Structures,
+1001,Algorithms,78
+1002,Computer Networks,92
+1002,Operating Systems,88
+1003,Database Systems,
+1003,Artifical Intelligence,
+1004,Software Engineering,91
+1005,Data Structures,82
+1005,Computer Networks,79
+1005,CMPS,
+1005,Computer science,90
+1005,CMPS,100
+1111,CMPS,90
+1005,CMPS,98
+1005,CMPS,89.0
+1001,Programming,98.0
+0561,Algorithms,100.0
