@@ -224,13 +224,13 @@ def Calculate_avg():
     if Student_exists(id):
         student_grades = [] # using an array to store the student grades 
         try:
-            file = open("grades.txt", 'r')
-            for line in file:
-                parts = line.strip().split(',')
-                if len(parts) == 3 and parts[0] == id:
-                    grade = parts[2]
-                    if grade != '':
-                        student_grades.append(float(grade))
+            with open("grades.txt", 'r') as file:
+                for line in file:
+                    parts = line.strip().split(',')
+                    if len(parts) == 3 and parts[0] == id:
+                        grade = parts[2]
+                        if grade != '':
+                            student_grades.append(float(grade))
 
             if len(student_grades) == 0: # checking if no grades exist
                 print("No grade exists")
