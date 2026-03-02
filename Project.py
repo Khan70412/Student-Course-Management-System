@@ -37,37 +37,35 @@ def main():
 
 
 
-def Student_exists(id):
+def Student_exists(student_id):
     try:
-        file = open('students.txt', 'r')
-        Found = False
-        for line in file:
-            if id == line.strip().split(',')[0]:
-                Found = True
-        file.close()
-        
-        return Found
-    
-    except IOError as error: 
-        print("Error occurred while file handling operations", error)
+        with open("students.txt", "r") as file:
+            for line in file:
+                if student_id == line.strip().split(",")[0]:
+                    return True
+        return False
     except FileNotFoundError:
-        print("File not found")
-
-
-def Course_exists(Course_name):
-    try:
-        file = open('courses.txt', 'r')
-        Found = False
-        for line in file:
-            if line.strip() == Course_name: 
-                Found = True
-        file.close()
-        return Found
-
+        print("students.txt file not found.")
+        return False
     except IOError as error:
-        print("Error occurred while file handling operations", error)
+        print("Error occurred while handling students.txt:", error)
+        return False
+
+
+def Course_exists(course_name):
+    try:
+        with open("courses.txt", "r") as file:
+            for line in file:
+                if line.strip() == course_name:
+                    return True
+        return False
     except FileNotFoundError:
-        print("File not found")
+        print("courses.txt file not found.")
+        return False
+    except IOError as error:
+        print("Error occurred while handling courses.txt:", error)
+        return False
+
 
 
 def check_aplhabets_and_spaces(name): # function to check for alphabets and spaces
@@ -84,15 +82,14 @@ def Add_Student():
             student_name = input("Enter the student name ")
             if check_aplhabets_and_spaces(student_name):
                 try:
-                    file = open('students.txt', 'a')
-                    file.write(id + ',' + student_name + '\n')
-                    file.close()
-                    print("Student was successfully added")
-
-                except IOError as error:
-                    print("Error occurred while file handling operations", error)
+                    with open("students.txt", "a") as file:
+                        file.write(id + "," + student_name + "\n")
+                    print("Student was successfully added.")
                 except FileNotFoundError:
                     print("File not found")
+                except IOError as error:
+                    print("Error occurred while file handling operations", error)
+
 
             else:
                 print("Student name does not only contain numbers and aplhabets ")
@@ -109,14 +106,14 @@ def Add_Course():
     if check_aplhabets_and_spaces(Course_name):      
         if not Course_exists(Course_name):
             try:
-                file = open('courses.txt', 'a')
-                file.write(Course_name + '\n' )
-                file.close()
-                print("Course was successfully added")
-            except IOError as error:
-                print("Error occurred while file handling operations", error)
+                with open("courses.txt", "a") as file:
+                    file.write(Course_name + "\n")
+                print("Course was successfully added.")
             except FileNotFoundError:
                 print("File not found")
+            except IOError as error:
+                print("Error occurred while file handling operations", error)
+      
 
         else:
             print("Course already exists in the file")
@@ -127,10 +124,10 @@ def Add_Course():
 
 
 def validate_grade(grade):
-    is_valid = False
-    if 0 <= grade <= 100:
-        is_valid = True
-    return is_valid
+        return  0 <= grade <= 100
+
+
+
 
 
 
@@ -143,14 +140,14 @@ def Enroll_Student():
                 grade = float(input("Enter the grade "))
                 if validate_grade(grade):
                     try:
-                        file = open('grades.txt', 'a')
-                        file.write(id + ',' + Course + ',' + str(grade) + '\n')
-                        print("Student was added to the file")
-                        
-                    except IOError as file_error:
-                        print("Error occured in the file handling operations", file_error)
+                        with open("grades.txt", "a") as file:
+                            file.write(id + "," + Course + "," + str(grade) + "\n")
+                        print("Student enrollment and grade were saved.")
                     except FileNotFoundError:
                         print("File not found")
+                    except IOError as file_error:
+                        print("Error occured in the file handling operations", file_error)
+
                 else:
                     print("invalid grade")
             else:
@@ -162,58 +159,62 @@ def Enroll_Student():
     except FileNotFoundError:
         print("File not found")
     
-def check_empty_files(line):
-    if line == '':
-        return True # file is empty
-    else:
-        return False # file is not empty
 
 def Display_Students():
     try: 
-        file = open('students.txt', 'r')
-        line1 = file.readline().strip()
-        if not check_empty_files(line1): # check for empty files
+        with open('students.txt', 'r') as file:
+            lines = []
+            for line in file:
+                line = line.strip()
+                if line != "":
+                    lines.append(line)
+
+            if len(lines) == 0:
+                print("No students found.")
+                return
+
             print()
             print("id \t name")
             print("--------------------------")
-            contents_of_line = line1.split(',')
-            id = contents_of_line[0]
-            name = contents_of_line[1]
-            print(f'{id} \t {name}') # printing the first record in the file
-
-            for line in file:
-                contents_of_line = line.strip().split(',')
-                id = contents_of_line[0]
-                name = contents_of_line[1]
-                print(f'{id} \t {name}')
+            for line in lines:
+                parts = line.split(",")
+                if len(parts) == 2:
+                    student_id = parts[0]
+                    name = parts[1]
+                    print(f"{student_id} \t {name}")
             print()
-            file.close()
-        else:
-            print("File is empty")
-    except IOError as error:
-        print("Error occurred while file handling operations", error)
     except FileNotFoundError:
         print("File not found")
+    except IOError as error:
+        print("Error occurred while file handling operations", error)
+
 
 
 def Display_Courses():
     try:
-        file = open("courses.txt", 'r')
-        line1 = file.readline().strip()
-        if not check_empty_files(line1):
-            print()
-            print("Courses")
-            print('-------------------')
-            print(line1) # printing the first line
+        with open("courses.txt", "r") as file:
+            # Collect non-empty lines manually (no list comprehension)
+            lines = []
             for line in file:
-                print(line.strip())
-            file.close()
-            print()
-        else:
-            print("The file is empty")
-    except IOError as error:
-        print("Error occurred while file handling operations", error)
+                line = line.strip()
+                if line != "":
+                    lines.append(line)
 
+        if len(lines) == 0:
+            print("No courses found.")
+            return
+        print()
+        print("Courses")
+        print('-------------------')
+
+        for course in lines:
+            print(course.strip())
+
+            print()
+    except FileNotFoundError:
+        print("courses.txt file not found.")
+    except IOError as error:
+        print("Error occurred while handling courses.txt:", error)
 
 
 def Calculate_avg():
@@ -225,8 +226,9 @@ def Calculate_avg():
         try:
             file = open("grades.txt", 'r')
             for line in file:
-                if line.strip().split(',')[0] == id:
-                    grade = line.strip().split(',')[2]
+                parts = line.strip().split(',')
+                if len(parts) == 3 and parts[0] == id:
+                    grade = parts[2]
                     if grade != '':
                         student_grades.append(float(grade))
 
@@ -251,43 +253,56 @@ def Calculate_avg():
 
 def find_top_student():
     try:
+        course = input("Enter the course name: ")
+        if not Course_exists(course):
+            print("Course does not exist in the file.")
+            return
+
         top_grade = -1
-        Course = input("Enter the course name ")
-        top_student = " " 
-        top_student_id = " "
-        if Course_exists(Course):
-            file = open("grades.txt", 'r')
-            for line in file:
-                if line.strip().split(',')[1] == Course:
-                    if line.strip().split(',')[2] == "": # checking if no grade exists 
-                        grade = 0  # when grade doesn't exist, assigning grade the value of 0
-                    else:
-                        grade = float(line.strip().split(',')[2])
-                        if grade > top_grade and grade != 0: 
+        top_student_id = None
+
+        try:
+            with open("grades.txt", "r") as file:
+                for line in file:
+                    parts = line.strip().split(",")
+                    if len(parts) == 3 and parts[1] == course:
+                        grade_str = parts[2]
+                        if grade_str == "":
+                            grade = 0
+                        else:
+                            grade = float(grade_str)
+                        if grade > top_grade and grade != 0:
                             top_grade = grade
-                            top_student_id = line.strip().split(',')[0]
-                        
+                            top_student_id = parts[0]
+        except FileNotFoundError:
+            print("grades.txt file not found.")
+            return
+        except IOError as error:
+            print("Error occurred while handling grades.txt:", error)
+            return
 
-            file.close()
-            if grade != 0: # finding the top_student only when the grade exists
-                file2 = open("students.txt",'r')
+        if top_grade == -1 or top_student_id is None:
+            print("No valid grades exist for this course.")
+            return
+        try:
+            top_student_name = None
+            with open("students.txt", "r") as file2:
                 for line in file2:
-                    if top_student_id == line.strip().split(',')[0]:
-                        top_student = line.strip().split(',')[1]
-                print(f"The top student for the course {Course} is {top_student}")
+                    parts = line.strip().split(",")
+                    if len(parts) == 2 and parts[0] == top_student_id:
+                        top_student_name = parts[1]
+                        break
+
+            if top_student_name:
+                print(f"The top student for the course {course} is {top_student_name} with grade {top_grade}.")
             else:
-                print("grade does not exist")
-        else:
-            print("Course does not exist in the file")
-
-
-    except IOError as error:
-        print("Error occurred while file handling operations", error)
-    except FileNotFoundError:
-        print("File is not found")
-        
+                print("Top student ID found, but no matching student record in students.txt.")
+        except FileNotFoundError:
+            print("students.txt file not found.")
+        except IOError as error:
+            print("Error occurred while handling students.txt:", error)
     except ValueError as error:
-        print("Invalid datatypes", error)
+        print("Invalid data type:", error)
 
 
     
