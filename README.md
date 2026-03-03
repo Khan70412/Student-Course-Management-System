@@ -22,4 +22,4 @@ The system uses three text files to act as a lightweight database:
 2. **Dependencies:** Uses standard Python libraries only (no external packages required).
 3. **Execution:** Run the script in your terminal:
    ```bash
-   python HW.py
+   python Project.py
